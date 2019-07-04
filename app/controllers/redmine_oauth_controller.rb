@@ -54,11 +54,12 @@ class RedmineOauthController < AccountController
       # Self-registration off
       redirect_to(home_url) && return unless Setting.self_registration?
       # Create on the fly
-      user.firstname, user.lastname = info["name"].split(' ') unless info['name'].nil?
+      user.firstname, user.lastname = info["name"].split(' ', 2) unless info['name'].nil?
       user.firstname ||= info["name"]
       user.lastname ||= info["name"]
       user.mail = email
       user.login = info['login']
+      user.login ||= email.split("@")[0]
       user.login ||= [user.firstname, user.lastname]*"."
       user.random_password
       user.register
